@@ -1,0 +1,676 @@
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="format-detection" content="telephone=no">
+	<meta name="msapplication-tap-highlight" content="no">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=150">
+	<!--link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+	<link rel="dns-prefetch" href="@@endpoint@@" /-->
+	<!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/onsen/2.12.0/css/onsenui-core.min.css" integrity="sha512-PQp1bNWgDTGvCTcwkThDhPqcvC9yrTj2bb6sjCidFsTcup/oVt8D3SYCfIg/0XZOuOeU5prvIvkVVN/0NmG39Q==" crossorigin="anonymous"
+		referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/onsen/2.12.0/css/onsen-css-components.min.css" integrity="sha512-rHKFTw7b/jxLKr5CBha4KriAPpp9H35g+aKsSBDQ/dedqWAgb10q5JyOmm0s7WdNd6mHP2hacXJmzPFhAniVxg==" crossorigin="anonymous"
+		referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous"
+		referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/v4-shims.min.css" integrity="sha512-8jeHv1CihM7sBeBfx3J7o0UVGMXc8wM20zSKVuAiQj5AmnYX36LpRZ8SpU5ec3Y4FgkUrJ5GqlAAWOzRDKFwfg==" crossorigin="anonymous"
+		referrerpolicy="no-referrer" /-->
+	<!--link async defer rel="stylesheet" href="generated/main.min.css?t=@@timestamp@@">
+	<link async defer rel="stylesheet" href="generated/non-main.min.css?t=@@timestamp@@"-->
+	<title>Loving Loyalty</title>
+</head>
+
+<body>
+
+	<ons-modal id="splashscreen-modal">
+		<div style="text-align: center;">
+			<div id="splashscreen-animation" style="background-color: white;"></div>
+		</div>
+	</ons-modal>
+
+	<ons-modal id="no-internet-modal" style="background-color: white;">
+		<div id="no-internet-animation"></div>
+		<div id="no-internet-modal-title"></div>
+		<div id="no-internet-modal-subtitle"></div>
+	</ons-modal>
+
+	<ons-modal animation="none" id="loader-modal">
+		<!--div style="text-align: center;">
+			<div id="loading-animation" style="width: 150px; height: 150px; margin: auto;"></div>
+			<p id="loader-modal-message" data-i18n="loading"></p>
+		</div-->
+		<div style="text-align: center">
+			<div id="loader-modal-message"></div>
+		</div>
+	</ons-modal>
+
+	<ons-splitter>
+		<ons-splitter-side id="main-menu" side="left" collapse style="display:none;">
+			<ons-page>
+				<ons-list modifier="noborder">
+					<div class="logged-out">
+						<ons-list-item modifier="nodivider chevron" onclick="$('#main-menu').get(0).close(); startLogin({canSkip:true});" tappable>
+							<div class="left">
+								<img class="list-item__thumbnail" src="/images/empty.png" />
+							</div>
+							<div class="center">
+								<strong data-i18n="sign-in-sign-up"></strong>
+							</div>
+						</ons-list-item>
+					</div>
+					<div class="logged-in">
+						<ons-list-item modifier="nodivider" expandable>
+							<div class="left">
+								<img class="list-item__thumbnail" src="/images/empty.png" id="menu-user-img" />
+							</div>
+							<div class="center" id="menu-user-name"></div>
+							<div class="expandable-content">
+								<ons-list modifier="noborder">
+									<ons-list-item style="padding-left: 0;" modifier="nodivider chevron" onclick="$('#main-menu').get(0).close(); displayEditProfileDialog();" tappable>
+										<div class="left">
+											<ons-icon icon="fa-user" class="far list-item__icon"></ons-icon>
+										</div>
+										<div class="center" data-i18n="profile">
+										</div>
+									</ons-list-item>
+									<ons-list-item style="padding-left: 0;" modifier="nodivider chevron" onclick="$('#main-menu').get(0).close(); displayEditNotificationsDialog();" tappable>
+										<div class="left">
+											<ons-icon icon="fa-envelope" class="far list-item__icon"></ons-icon>
+										</div>
+										<div class="center" data-i18n="notifications" >
+										</div>
+									</ons-list-item>
+								</ons-list>
+							</div>
+						</ons-list-item>
+					</div>
+					<div class="customer-content">
+						<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); gotoPage('my-table-bookings.html');" tappable>
+							<div class="left">
+								<ons-icon icon="fa-book" class="list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="my-table-bookings"></div>
+						</ons-list-item>
+					</div>
+					<div class="customer-content">
+						<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); gotoPage('my-favorites.html');" tappable>
+							<div class="left">
+								<ons-icon icon="fa-heart" class="far list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="my-favorites"></div>
+						</ons-list-item>
+					</div>
+					<div class="customer-content">
+						<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); displayReferAFriend();" tappable>
+							<div class="left">
+								<ons-icon icon="fa-share" class="list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="refer-a-friend">
+							</div>
+						</ons-list-item>
+					</div>
+					<div class="cashier-content">
+						<ons-list-item modifier="nodivider" expandable>
+							<div class="left">
+								<ons-icon icon="fa-store" class="list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="manage-place"></div>
+							<div class="expandable-content">
+								<ons-list modifier="noborder">
+									<ons-list-item style="padding-left: 0;" modifier="nodivider chevron" onclick="$('#main-menu').get(0).close(); displayPlaceStatusDialog();" tappable>
+										<div class="left">
+											<ons-icon icon="fa-cog" class="list-item__icon"></ons-icon>
+										</div>
+										<div class="center" data-i18n="status"></div>
+									</ons-list-item>
+									<ons-list-item style="padding-left: 0;" modifier="nodivider chevron" onclick="$('#main-menu').get(0).close(); gotoPage('edit-available-items.html');" tappable>
+										<div class="left">
+											<ons-icon icon="fa-utensils" class="list-item__icon"></ons-icon>
+										</div>
+										<div class="center" data-i18n="out-of-stock-items"></div>
+									</ons-list-item>
+									<ons-list-item id="cashier-place-location-link" style="padding-left: 0;" modifier="nodivider chevron" onclick="$('#main-menu').get(0).close(); openSearchForLocationDialog();" tappable>
+										<div class="left">
+											<ons-icon icon="fa-map-marker-alt" class="list-item__icon"></ons-icon>
+										</div>
+										<div class="center" data-i18n="location"></div>
+									</ons-list-item>
+								</ons-list>
+							</div>
+						</ons-list-item>
+					</div>
+					<div class="cashier-content">
+						<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); gotoPage('place-payments.html');" tappable>
+							<div class="left">
+								<ons-icon icon="fa-coins" class="list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="payments"></div>
+						</ons-list-item>
+					</div>
+					<div class="cashier-content">
+						<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); gotoPage('place-sales-reports.html');" tappable>
+							<div class="left">
+								<ons-icon icon="fa-file-invoice-dollar" class="list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="sales-reports"></div>
+						</ons-list-item>
+					</div>
+					<div class="cashier-content">
+						<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); displayPOSDevicesDialog();" tappable>
+							<div class="left">
+								<ons-icon icon="fa-credit-card" class="list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="payment-terminals"></div>
+						</ons-list-item>
+					</div>
+					<!--div class="cashier-content" id="activate-payment-terminal">
+						<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); activatePOSDevice();" tappable>
+							<div class="left">
+								<ons-icon icon="fa-thunderstorm" class="list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="activate-payment-terminal"></div>
+						</ons-list-item>
+					</div-->
+					<div class="payments-content">
+						<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); displayReceiptPrintersDialog();" tappable>
+							<div class="left">
+								<ons-icon icon="fa-receipt" class="list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="receipt-printers"></div>
+						</ons-list-item>
+					</div>
+					<div class="customer-content">
+						<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); startClaimBonusCode();" tappable>
+							<div class="left">
+								<ons-icon icon="fa-grin-stars" class="far list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="claim-bonus-code-points"></div>
+						</ons-list-item>
+					</div>
+					<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); displaySendMessageDialog();" tappable>
+						<div class="left">
+							<ons-icon icon="fa-comments" class="far list-item__icon"></ons-icon>
+						</div>
+						<div class="center" data-i18n="contact-us"></div>
+					</ons-list-item>
+					<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); rateApp();" tappable>
+						<div class="left">
+							<ons-icon icon="fa-star" class="far list-item__icon"></ons-icon>
+						</div>
+						<div class="center" data-i18n="rate-loving-loyalty"></div>
+					</ons-list-item>
+					<ons-list-item modifier="nodivider" expandable>
+						<div class="left">
+							<ons-icon icon="fa-info-circle" class="list-item__icon"></ons-icon>
+						</div>
+						<div class="center" data-i18n="about"></div>
+						<div class="expandable-content">
+							<ons-list modifier="noborder">
+								<ons-list-item style="padding-left: 0;" modifier="nodivider chevron" onclick="$('#main-menu').get(0).close(); gotoPage('intro.html');" tappable>
+									<div class="left">
+										<ons-icon icon="fa-eye" class="far list-item__icon"></ons-icon>
+									</div>
+									<div class="center" data-i18n="take-tour"></div>
+								</ons-list-item>
+								<ons-list-item style="padding-left: 0;" modifier="nodivider chevron" onclick="$('#main-menu').get(0).close(); openPage('/pages/terms');" tappable>
+									<div class="left">
+										<ons-icon icon="fa-paragraph" class="list-item__icon"></ons-icon>
+									</div>
+									<div class="center" data-i18n="terms-conditions"></div>
+								</ons-list-item>
+								<ons-list-item style="padding-left: 0;" modifier="nodivider chevron" onclick="$('#main-menu').get(0).close(); openPage('/pages/privacy-policy');" tappable>
+									<div class="left">
+										<ons-icon icon="fa-user-shield" class="list-item__icon"></ons-icon>
+									</div>
+									<div class="center" data-i18n="privacy-policy"></div>
+								</ons-list-item>
+								<ons-list-item style="padding-left: 0;" modifier="nodivider">
+									<div class="left">
+										<ons-icon icon="fa-code-branch" class="list-item__icon"></ons-icon>
+									</div>
+									<div class="center">
+										<span class="list-item__title" data-i18n="app-version"></span>
+										<span class="list-item__subtitle" id="app-version"></span>
+									</div>
+								</ons-list-item>
+							</ons-list>
+						</div>
+					</ons-list-item>
+					<div class="logged-out">
+						<ons-list-item modifier="nodivider chevron" onclick="$('#main-menu').get(0).close(); gotoPage('select-language.html');" tappable>
+							<div class="left">
+								<ons-icon icon="fa-language" class="list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="language">
+							</div>
+						</ons-list-item>
+					</div>
+					<div class="cashier-content">
+						<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); customerOrder();" tappable>
+							<div class="left">
+								<ons-icon icon="fa-paper-plane" class="list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="create-order"></div>
+						</ons-list-item>
+					</div>
+					<div class="logged-in" id="switch-role">
+						<ons-list-item modifier="nodivider" onclick="$('#main-menu').get(0).close(); switchRole();" tappable>
+							<div class="left">
+								<ons-icon icon="fa-user-tag" class="list-item__icon"></ons-icon>
+							</div>
+							<div class="center" data-i18n="switch-role"></div>
+						</ons-list-item>
+					</div>
+					<ons-list-item class="logged-in" modifier="nodivider" onclick="$('#main-menu').get(0).close(); logout();" tappable>
+						<div class="left">
+							<ons-icon icon="fa-sign-out-alt" class="list-item__icon"></ons-icon>
+						</div>
+						<div class="center" data-i18n="log-out"></div>
+					</ons-list-item>
+				</ons-list>
+				<ons-bottom-toolbar style="border: none;">
+					<div class="center" style="margin: auto; width: 50%; padding-top: 8px;">
+						<img src="/images/lovingloyalty_horizontal_transparent.svg" style="max-height: 50px; width: 100%;" />
+					</div>
+				</ons-bottom-toolbar>
+			</ons-page>
+		</ons-splitter-side>
+		<ons-splitter-content id="content" page="home-page.html"></ons-splitter-content>
+	</ons-splitter>
+
+	<template id="home-page.html">
+		<ons-page id="home-page">
+			<ons-navigator id="navigator" page="blank.html" animation="slide"></ons-navigator>
+		</ons-page>
+	</template>
+
+	<template id="blank.html">
+		<ons-page id="blank"></ons-page>
+	</template>
+
+	<template id="login-menu.html">
+		<ons-page id="login-menu">
+			<ons-toolbar modifier="cover-content transparent">
+				<div class="left">
+					<ons-back-button><span data-i18n="back"></span></ons-back-button>
+				</div>
+			</ons-toolbar>
+			<div id="login-menu-contents"></div>
+		</ons-page>
+	</template>
+
+	<template id="home.html"> </template>
+
+	<template id="anonymous-home-page.html">
+		<ons-page id="anonymous-home-page">
+			<ons-toolbar>
+				<div class="left">
+					<ons-toolbar-button onclick="$('#main-menu').get(0).open();">
+						<ons-icon icon="fa-navicon"></ons-icon>
+					</ons-toolbar-button><span class="main-menu-text" data-i18n="menu"></span>
+				</div>
+				<div class="right">
+					<ons-toolbar-button onclick="gotoPageSilent('search.html');">
+						<ons-icon icon="fa-search"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+			</ons-toolbar>
+			<div id="anonymous-home-page-content"></div>
+			<div id="anonymous-home-page-bottom-menu"></div>
+		</ons-page>
+	</template>
+
+	<template id="customer-home-page.html">
+		<ons-page id="customer-home-page">
+			<ons-toolbar>
+				<div class="left">
+					<ons-toolbar-button onclick="$('#main-menu').get(0).open();">
+						<ons-icon icon="fa-navicon"></ons-icon>
+					</ons-toolbar-button>
+					<span class="main-menu-text" id="cashier-home-page-title"></span>
+				</div>
+			</ons-toolbar>
+			<div id="customer-home-overview"></div>
+			<div id="customer-home-page-bottom-menu"></div>
+		</ons-page>
+	</template>
+
+
+	<template id="find-place.html">
+		<ons-page id="find-place">
+			<ons-toolbar>
+				<div class="left">
+					<ons-toolbar-button onclick="$('#main-menu').get(0).open();">
+						<ons-icon icon="fa-navicon"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+				<div class="find-place-center center" onclick="openSearchForLocationDialog(true);">
+					<div id="current-location-address">
+						<ons-icon icon="fa-map-marker-alt"></ons-icon>
+						<div id="current-location-address-text-inner"></div>
+					</div>
+				</div>
+			</ons-toolbar>
+			<div class="place-search-box-find-place">
+				<ons-search-input onclick="gotoPageSilent('search.html');" id="find-place-search-outer" data-i18n="[placeholder]place-search-placeholder" />
+			</div>
+			<div id="find-place-content"></div>
+			<div id="find-place-bottom-menu"></div>
+		</ons-page>
+	</template>
+
+	<template id="select-language.html">
+		<ons-page id="select-language">
+			<ons-toolbar>
+				<div class="left">
+					<ons-back-button><span data-i18n="back"></span></ons-back-button>
+				</div>
+				<div class="center" data-i18n="select-language"></div>
+			</ons-toolbar>
+			<div class="content">
+				<ons-list>
+					<ons-list-item modifier="chevron" onclick="switchLanguage('en', true);" tappable>
+						<div class="left">
+							<img class="list-item__thumbnail" src="/images/en.png">
+						</div>
+						<div class="center">English</div>
+					</ons-list-item>
+					<ons-list-item modifier="chevron" onclick="switchLanguage('da', true);" tappable>
+						<div class="left">
+							<img class="list-item__thumbnail" src="/images/da.png">
+						</div>
+						<div class="center">Dansk</div>
+					</ons-list-item>
+					<!--ons-list-item modifier="chevron" onclick="switchLanguage('de', true);" tappable>
+						<div class="left">
+							<img class="list-item__thumbnail" src="/images/de.png">
+						</div>
+						<div class="center">Deutch</div>
+					</ons-list-item-->
+				</ons-list>
+			</div>
+		</ons-page>
+	</template>
+
+	<template id="all-places.html">
+		<ons-page id="all-places">
+			<ons-toolbar>
+				<div class="left">
+					<ons-back-button><span data-i18n="back"></span></ons-back-button>
+				</div>
+				<div class="center" data-i18n="all-places">
+				</div>
+			</ons-toolbar>
+			<div class="content" id="all-places-content">
+			</div>
+		</ons-page>
+	</template>
+
+	<template id="search.html">
+		<ons-page id="search">
+			<ons-toolbar id="search-toolbar">
+				<div class="left">
+					<ons-back-button></ons-back-button>
+				</div>
+				<div class="center">
+					<div class="place-search-box-search">
+						<ons-search-input onblur="saveSearchQuery();" onkeyup="search();" id="find-place-search" data-i18n="[placeholder]place-search-placeholder"></ons-search-input>
+					</div>
+				</div>
+			</ons-toolbar>
+			<ons-list modifier="noborder" id="find-area-search-wrapper" style="display: none;">
+				<div id="find-area-search-list"></div>
+			</ons-list>
+			<ons-list modifier="noborder" id="find-cuisine-search-wrapper" style="display: none;">
+				<div id="find-cuisine-search-list"></div>
+			</ons-list>
+			<ons-list modifier="noborder" id="find-place-search-wrapper" style="display: none;">
+				<div class="place-details-header" style="padding-left: 16px;" data-i18n="places"></div>
+				<div id="find-place-search-list"></div>
+			</ons-list>
+			<ons-list modifier="noborder" id="recent-search-wrapper" style="display: none;">
+				<div class="place-details-header" style="padding-left: 16px;" data-i18n="recent-searches"></div>
+				<div id="recent-search-list"></div>
+			</ons-list>
+		</ons-page>
+	</template>
+
+	<template id="view-place-details.html">
+		<ons-page id="view-place-details">
+			<ons-toolbar modifier="cover-content transparent">
+				<div class="left">
+					<ons-back-button><span data-i18n="back"></span></ons-back-button>
+				</div>
+				<div class="center" id="view-place-details-title"></div>
+				<div class="right">
+					<ons-toolbar-button onclick="toggleFavorite();">
+						<ons-icon class="far" id="place-favorite-icon" icon="fa-heart"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+			</ons-toolbar>
+			<div id="place-details-content"></div>
+			<div id="place-details-bottom-menu"></div>
+		</ons-page>
+	</template>
+
+	<template id="place-menu.html">
+		<ons-page id="place-menu">
+			<ons-toolbar>
+				<div class="left">
+					<ons-back-button><span data-i18n="back"></span></ons-back-button>
+					<ons-toolbar-button id="place-menu-icon" style="display: none;" onclick="$('#main-menu').get(0).open();">
+						<ons-icon icon="fa-navicon"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+				<div class="center" id="place-menu-title"></div>
+				<div class="right" style="display: flex;">
+					<div style="display: none;" id="place-menu-notice" onclick="appNavigation.back();">
+						<div style="display: flex; align-items: center;">
+							<img src="/images/attention.gif" style="width: 30px; height: 30px;" />
+							<div class="header-icon-text" style="font-size: 0.9em; margin: 0 20px 0 10px;" data-i18n="you-have-new-orders"></div>
+						</div>
+					</div>
+					<div style="padding: 8px 0; display: flex; column-gap: 16px;">
+						<ons-toolbar-button id="place-menu-view-bill" style="display: none;" onclick="displayVisitDetails(currentVisit.id);">
+							<span class="header-icon-text" data-i18n="view-pay-bill"> </span>
+						</ons-toolbar-button>
+						<ons-toolbar-button id="place-menu-call-waiter" style="display: none;" onclick="notifyPlace('call_waiter');">
+							<span class="header-icon-text" data-i18n="call-waiter"> </span>
+						</ons-toolbar-button>
+					</div>
+				</div>
+			</ons-toolbar>
+			<div class="actual-page-content">
+				<div id="menu-sections-content"></div>
+				<div class="order-summary" style="display: none;">
+					<div class="fixed-bottom-bar">
+						<ons-button class="form-button" modifier="large" onclick="viewCart();">
+							<span class="cart-items-and-cost"></span>
+						</ons-button>
+					</div>
+				</div>
+			</div>
+		</ons-page>
+	</template>
+
+
+	<template id="cart.html">
+		<ons-page id="cart">
+			<ons-toolbar>
+				<div class="left">
+					<ons-back-button><span data-i18n="back"></span></ons-back-button>
+				</div>
+				<div class="center" data-i18n="confirmation"></div>
+			</ons-toolbar>
+			<div class="content" style="padding-bottom: 0 !important;">
+				<div style="padding: 0 16px;">
+					<div class="cart"></div>
+				</div>
+			</div>
+		</ons-page>
+	</template>
+
+	<template id="thank-you.html">
+		<ons-page id="thank-you">
+			<ons-toolbar modifier="transparent cover-content" style="background-color: transparent;">
+			</ons-toolbar>
+			<div id="thank-you-contents"></div>
+		</ons-page>
+	</template>
+
+	<template id="search-for-location.html">
+		<ons-page id="search-for-location">
+			<ons-toolbar>
+				<div class="left">
+					<ons-back-button><span data-i18n="back"></span></ons-back-button>
+				</div>
+				<div class="center" data-i18n="search-for-location"></div>
+			</ons-toolbar>
+		</ons-page>
+	</template>
+
+	<template id="view-places-by-category.html">
+		<ons-page id="view-places-by-category">
+			<ons-toolbar>
+				<div class="left">
+					<ons-back-button><span data-i18n="back"></span></ons-back-button>
+				</div>
+				<div class="right">
+					<ons-toolbar-button onclick="document.getElementById('category-filter-popover').show(this);">
+						<ons-icon icon="fa-sort-amount-down"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+			</ons-toolbar>
+			<div id="view-places-by-category-header">
+				<div id="view-places-by-category-name"></div> /
+				<div id="view-places-by-category-value"></div>
+			</div>
+			<div id="view-places-by-category-content"></div>
+		</ons-page>
+	</template>
+
+	<template id="intro.html">
+		<ons-page id="intro">
+			<div id="intro-contents"></div>
+		</ons-page>
+	</template>
+
+	<template id="select-table.html">
+		<ons-page id="select-table">
+			<ons-toolbar>
+				<div class="left">
+					<ons-back-button><span data-i18n="back"></span></ons-back-button>
+				</div>
+				<div class="center" data-i18n="select-table"></div>
+			</ons-toolbar>
+			<div class="content">
+				<div id="select-table-content"></div>
+			</div>
+		</ons-page>
+	</template>
+
+	<template id="select-pickup-time.html">
+		<ons-page id="select-pickup-time">
+			<ons-toolbar>
+				<div class="left">
+					<ons-back-button><span data-i18n="back"></span></ons-back-button>
+				</div>
+				<div class="center" data-i18n="select-pickup-time"></div>
+			</ons-toolbar>
+			<div class="content">
+				<div id="select-pickup-time-content"></div>
+			</div>
+		</ons-page>
+	</template>
+
+	<template id="request-tip.html">
+		<ons-page id="request-tip">
+			<div id="request-tip-content" class="content" style="padding-bottom: 16px !important;">
+			</div>
+		</ons-page>
+	</template>
+
+	<template id="custom-tip.html">
+		<ons-page id="custom-tip">
+			<ons-toolbar>
+				<div class="left">
+					<ons-back-button><span data-i18n="back"></span></ons-back-button>
+				</div>
+				<div class="center" data-i18n="enter-amount-to-tip">
+				</div>
+			</ons-toolbar>
+			<div class="content" style="padding-bottom: 0;">
+				<div class="payment-container">
+					<div class="amount-to-charge" id="custom-tip-amount-to-tip"></div>
+					<div class="keypad-row">
+						<ons-button disable-auto-styling class="keypad-number" onclick="addDigitToPayment('1', 'custom-tip');">1</ons-button>
+						<ons-button disable-auto-styling class="keypad-number" onclick="addDigitToPayment('2', 'custom-tip');">2</ons-button>
+						<ons-button disable-auto-styling class="keypad-number" onclick="addDigitToPayment('3', 'custom-tip');">3</ons-button>
+					</div>
+					<div class="keypad-row">
+						<ons-button disable-auto-styling class="keypad-number" onclick="addDigitToPayment('4', 'custom-tip);">4</ons-button>
+						<ons-button disable-auto-styling class="keypad-number" onclick="addDigitToPayment('5', 'custom-tip');">5</ons-button>
+						<ons-button disable-auto-styling class="keypad-number" onclick="addDigitToPayment('6', 'custom-tip');">6</ons-button>
+					</div>
+					<div class="keypad-row">
+						<ons-button disable-auto-styling class="keypad-number" onclick="addDigitToPayment('7', 'custom-tip');">7</ons-button>
+						<ons-button disable-auto-styling class="keypad-number" onclick="addDigitToPayment('8', 'custom-tip');">8</ons-button>
+						<ons-button disable-auto-styling class="keypad-number" onclick="addDigitToPayment('9', 'custom-tip');">9</ons-button>
+					</div>
+					<div class="keypad-row">
+						<ons-button disable-auto-styling class="keypad-number" onclick="addDigitToPayment('00', 'custom-tip');">00</ons-button>
+						<ons-button disable-auto-styling class="keypad-number" onclick="addDigitToPayment('0', 'custom-tip');">0</ons-button>
+						<ons-button disable-auto-styling class="keypad-number" onclick="removeDigitFromPayment('custom-tip');">⌫</ons-button>
+					</div>
+					<div class="payment-bottom-bar-wrapper">
+						<div class="fixed-bottom-bar">
+							<ons-button id="custom-tip-accept-tip-button" class="form-button" modifier="large" onclick="selectCustomTip();">
+								<span id="custom-tip-accept-tip-button-amount"></span>
+							</ons-button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ons-page>
+	</template>
+
+	<ons-dialog id="generic-dialog" animation="none">
+		<div id="generic-dialog-content"></div>
+	</ons-dialog>
+
+	<ons-popover direction="down" id="user-profile-picture-popover" cancelable>
+		<ons-list modifier="noborder">
+			<ons-list-item modifier="nodivider" style="padding-left: 0;" tappable onclick="document.getElementById('user-profile-picture-popover').hide(); selectProfilePicture('camera');">
+				<div class="center" style="text-align: center; padding-right: 16px; padding-left: 16px;" data-i18n="from-camera"></div>
+			</ons-list-item>
+			<ons-list-item modifier="nodivider" style="padding-left: 0;" tappable onclick="document.getElementById('user-profile-picture-popover').hide(); selectProfilePicture('gallery');">
+				<div class="center" style="text-align: center; padding-right: 16px; padding-left: 16px;" data-i18n="from-gallery"></div>
+			</ons-list-item>
+		</ons-list>
+	</ons-popover>
+
+	<div id="celebration-animation-container">
+		<div id="confetti-animation"></div>
+	</div>
+
+	<!--script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
+	</script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/onsen/2.12.0/js/onsenui.min.js" integrity="sha512-Zf6/iSEbwGeHqYLfieOsGSn58VZ5mcnkKwUSo6SQvyqVOzl7JkzjW6+eEgKmOZ2hWXCxCRiRPewp/Y3168TPUw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+	</script-->
+
+	<!--script src="@@endpoint@@/generated/main.min.js?t=@@timestamp@@"></script>
+	<script src="@@endpoint@@/generated/templates_anonymous.min.js?t=@@timestamp@@"></script>
+	<script src="@@endpoint@@/generated/model.min.js?t=@@timestamp@@"></script>
+	<script src="@@endpoint@@/generated/model_entities.min.js?t=@@timestamp@@"></script>
+	<script src="@@endpoint@@/generated/model_widgets.min.js?t=@@timestamp@@"></script>
+	<script src="@@endpoint@@/generated/utils_anonymous.min.js?t=@@timestamp@@"></script>
+	<script src="@@endpoint@@/generated/controllers_anonymous.min.js?t=@@timestamp@@"></script>
+	<script src="@@endpoint@@/js/index.js?t=@@timestamp@@"></script>
+	<script async defer src="@@endpoint@@/generated/non-main.min.js?t=@@timestamp@@"></script-->
+	<!-- <script async type="text/javascript" src="./dist/bundle.js">
+	</script> -->
+
+</body>
+
+</html>
