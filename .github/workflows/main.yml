@@ -1,0 +1,50 @@
+name: Build and Deploy
+
+on: 
+  push: 
+    branches: 
+      - main  
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs: 
+  build:   
+    name: Build 
+    runs-on: ubuntu-latest   
+
+    steps:     
+      - name: Checkout repository   
+        uses: actions/checkout@v2  # Use a stable version instead of 'main' for actions
+
+      - name: Install dependencies    
+        run: npm ci   
+
+      - name: Build project    
+        run: npm run build    
+
+      - name: Archive production artifact     
+        uses: actions/upload-artifact@v2  # Use a stable version instead of 'main' for actions
+        with:         
+          name: dist       
+          path: dist 
+
+  deploy:  
+    name: Deploy  
+    needs: build  
+    runs-on: ubuntu-latest  
+
+    steps:     
+      - name: Checkout repository   
+        uses: actions/checkout@v2  # Use a stable version instead of 'main' for actions
+
+      - name: Download artifact    
+        uses: actions/download-artifact@v2  # Use a stable version instead of 'main' for actions
+        with:         
+          name: dist        
+          path: dist    
+
+      - name: Deploy to Firebase     
+        uses: w9jds/firebase-action@v1  # Use a stable version instead of 'master' for actions
+        with:         
+          args: deploy --only hosting    
+        env:          
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_SECRET }}  # Corrected syntax for accessing secrets
